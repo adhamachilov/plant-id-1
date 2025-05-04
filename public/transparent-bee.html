@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transparent Bee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: transparent !important;
+            margin: 0;
+            padding: 0;
+        }
+        
+        canvas {
+            display: block;
+            background: transparent !important;
+        }
+        
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: transparent !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <script>
+        // Completely transparent Three.js scene setup
+        let scene, camera, renderer, mixer, clock, bee;
+        
+        function init() {
+            // Set up clock for animations
+            clock = new THREE.Clock();
+            
+            // Create scene with transparent background
+            scene = new THREE.Scene();
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 8); // Move camera further back to accommodate larger model
+            
+            // Create renderer with maximum transparency
+            renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true,
+                premultipliedAlpha: false
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0); // Fully transparent background
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Important transparency settings
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            renderer.domElement.style.background = "transparent";
+            
+            // Setup lights optimized for yellow/orange bee
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+            
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            keyLight.position.set(5, 5, 5);
+            keyLight.castShadow = true;
+            scene.add(keyLight);
+            
+            // Warm golden light from front
+            const warmLight = new THREE.PointLight(0xffaa44, 1);
+            warmLight.position.set(3, 0, 3);
+            scene.add(warmLight);
+            
+            // Controls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = false;
+            
+            // Load the bee model
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                './3d/flying_bee.glb',
+                function(gltf) {
+                    bee = gltf.scene;
+                    
+                    // Center and scale the model
+                    const box = new THREE.Box3().setFromObject(bee);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+                    
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    // Reduce scale to make bee smaller
+                    const scale = 4.5 / maxDim; // Reduced from 5.5 to 4.5
+                    bee.scale.set(scale, scale, scale);
+                    
+                    // Position bee to the right and a bit lower
+                    bee.position.x = -center.x * scale + 1.0; // Keep the right shift
+                    bee.position.y = -center.y * scale - 0.8; // Move lower
+                    bee.position.z = -center.z * scale;
+                    
+                    // Process materials
+                    bee.traverse(function(node) {
+                        if (node.isMesh) {
+                            node.castShadow = true;
+                            node.receiveShadow = true;
+                            
+                            if (Array.isArray(node.material)) {
+                                node.material.forEach(function(mat) {
+                                    enhanceMaterial(mat);
+                                });
+                            } else if (node.material) {
+                                enhanceMaterial(node.material);
+                            }
+                        }
+                    });
+                    
+                    // Set up animation
+                    if (gltf.animations && gltf.animations.length) {
+                        mixer = new THREE.AnimationMixer(bee);
+                        const action = mixer.clipAction(gltf.animations[0]);
+                        action.play();
+                    } else {
+                        // Simple hover animation
+                        animateBeeHover();
+                    }
+                    
+                    scene.add(bee);
+                },
+                undefined,
+                function(error) {
+                    console.error('Error loading model:', error);
+                }
+            );
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Start animation loop
+            animate();
+        }
+        
+        function enhanceMaterial(material) {
+            if (!material) return;
+            
+            // Enhance the material for better appearance
+            material.roughness = 0.3;
+            material.metalness = 0.2;
+            
+            // Increase the emissive factor to make it glow slightly
+            if (material.color) {
+                material.emissive.set(
+                    material.color.r * 0.2,
+                    material.color.g * 0.2,
+                    material.color.b * 0.2
+                );
+                material.emissiveIntensity = 0.3;
+            }
+            
+            material.needsUpdate = true;
+        }
+        
+        function animateBeeHover() {
+            function hover() {
+                if (!bee) return;
+                
+                const time = Date.now() * 0.001;
+                bee.position.y = Math.sin(time * 1.5) * 0.2;
+                bee.rotation.y = time * 0.3;
+                
+                requestAnimationFrame(hover);
+            }
+            
+            hover();
+        }
+        
+        function onWindowResize() {
+            // Set camera aspect ratio based on window dimensions
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            
+            // Make sure renderer fills the entire container height (750px in the iframe)
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (mixer) {
+                mixer.update(clock.getDelta());
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Start everything when the document is loaded
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
