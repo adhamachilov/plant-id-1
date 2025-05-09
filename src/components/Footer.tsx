@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-emerald-950 text-white pt-16 pb-8 mt-16">
+    <footer className="text-white pt-16 pb-8 mt-16 relative z-10">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Copyright */}
-        <div className="pt-8 mt-8 border-t border-emerald-900 text-center">
+        <div className="pt-8 mt-8 text-center">
           <p className="text-emerald-400 text-sm">
             © {new Date().getFullYear()} PlantID. All rights reserved.
           </p>

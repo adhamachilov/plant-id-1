@@ -31,9 +31,9 @@ const features = [
 
 const FeatureHighlights: React.FC = () => {
   return (
-    <section className="py-16 bg-emerald-950">
+    <section className="py-16 relative">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Everything You Need to Know</h2>
           <p className="text-emerald-300 max-w-2xl mx-auto">
             Our AI-powered plant identification gives you more than just a name. 
@@ -41,20 +41,61 @@ const FeatureHighlights: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div 
-              key={index}
-              className="bg-emerald-900/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-800/50 hover:border-emerald-700/70 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-900/30 hover:-translate-y-1"
-            >
-              <div className="mb-4 bg-emerald-950/50 p-4 inline-block rounded-xl">
-                {feature.icon}
+        <div className="flex justify-center items-center">
+          <div className="flex flex-wrap justify-center max-w-[1200px] mx-auto relative pt-10 pb-8">
+            {features.map((feature, index) => (
+              <div 
+                key={index}
+                style={{
+                  zIndex: index === 2 ? 30 : 20 - Math.abs(index - 2),
+                  marginLeft: index > 0 ? '-30px' : '0',
+                  transform: `translateY(${index === 2 ? '-20px' : '0'})`
+                }}
+                className={`stacked-card bg-emerald-900/40 backdrop-blur-xl rounded-2xl p-6 border-line-animation ${
+                  index === 2 ? 'w-[260px] md:w-[280px] featured-line-animation border border-emerald-400/30' : 'w-[220px] md:w-[240px] border border-emerald-700/50'
+                } flex flex-col h-[340px] md:h-[360px]`}
+              >
+                <div className="stacked-card-header mb-4">
+                  <div className="icon-wrapper mb-6 bg-emerald-950/50 p-4 inline-block rounded-xl">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+                </div>
+                
+                <p className={`${index === 2 ? 'text-emerald-100' : 'text-emerald-200'} flex-grow`}>
+                  {feature.description}
+                </p>
+                
+                <div className="card-tags mt-4">
+                  {index === 0 && (
+                    <span className="text-xs px-3 py-1 bg-emerald-800/50 rounded-full text-emerald-300 mr-2">Care Guide</span>
+                  )}
+                  {index === 1 && (
+                    <span className="text-xs px-3 py-1 bg-emerald-800/50 rounded-full text-emerald-300 mr-2">Water Tips</span>
+                  )}
+                  {index === 2 && (
+                    <>
+                      <span className="text-xs px-3 py-1 bg-emerald-800/50 rounded-full text-emerald-300 mr-2">Essential</span>
+                      <span className="text-xs px-3 py-1 bg-emerald-800/50 rounded-full text-emerald-300">Featured</span>
+                    </>
+                  )}
+                  {index === 3 && (
+                    <span className="text-xs px-3 py-1 bg-emerald-800/50 rounded-full text-emerald-300 mr-2">Geography</span>
+                  )}
+                  {index === 4 && (
+                    <span className="text-xs px-3 py-1 bg-emerald-800/50 rounded-full text-emerald-300 mr-2">Plant Trivia</span>
+                  )}
+                </div>
+                
+                {/* Empty spans needed for border animation */}
+                <span></span>
+                <span></span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-emerald-200">{feature.description}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
+
       </div>
     </section>
   );

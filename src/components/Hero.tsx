@@ -13,18 +13,14 @@ const CopyBeeModel = () => {
 
 const Hero: React.FC = () => {
   return (
-    <div className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-emerald-950 z-0">
-      </div>
-
+    <div className="relative pt-12 pb-16 md:pt-16 md:pb-24">
       {/* Reminder to copy 3D model */}
       <CopyBeeModel />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mt-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mt-4">
           {/* Hero Text */}
-          <div className="text-white">
+          <div className="text-white" style={{ marginTop: "-80px" }}>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight animate-fadeIn">
               Identify Any Plant <span className="text-emerald-400">Instantly</span>
             </h1>
@@ -49,8 +45,8 @@ const Hero: React.FC = () => {
             </div>
           </div>
           
-          {/* 3D Bee Model without container */}
-          <div className="relative" style={{ height: "600px", overflow: "hidden" }}>
+          {/* 3D Bee Model container */}
+          <div className="relative" style={{ height: "600px", position: "relative" }}>
             <iframe 
               src="/transparent-bee.html" 
               title="3D Bee Model"
@@ -60,7 +56,7 @@ const Hero: React.FC = () => {
                 height: "850px", /* Increased from 750px to 850px */
                 border: "none",
                 background: "transparent",
-                pointerEvents: "auto",
+                pointerEvents: "auto", // Enable interaction with the bee
                 top: "-250px", /* Extends 250px upward (increased from 150px) */
                 left: "-20%" /* Shifts 20% to the left */
               }}

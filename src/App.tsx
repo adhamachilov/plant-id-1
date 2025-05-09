@@ -5,12 +5,19 @@ import HomePage from './pages/HomePage';
 import IdentifyPage from './pages/IdentifyPage';
 import PlantsPage from './pages/PlantsPage';
 import PlantDetailPage from './pages/PlantDetailPage';
+import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
+import AnimatedBackground from './components/AnimatedBackground';
 import './App.css';
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-emerald-950">
+      <div className="flex flex-col min-h-screen relative overflow-hidden">
+        {/* Single animated background for the entire app */}
+        <div className="fixed inset-0 z-0">
+          <AnimatedBackground />
+        </div>
         <Header />
         <main className="flex-grow">
           <Routes>
@@ -18,6 +25,8 @@ function App() {
             <Route path="/identify" element={<IdentifyPage />} />
             <Route path="/plants" element={<PlantsPage />} />
             <Route path="/plants/:id" element={<PlantDetailPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/about" element={<AboutPage />} />
           </Routes>
         </main>
         <Footer />

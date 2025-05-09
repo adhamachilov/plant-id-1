@@ -15,23 +15,23 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: transparent !important;
+            background-color: rgba(0, 0, 0, 0) !important;
             margin: 0;
             padding: 0;
         }
         
         canvas {
             display: block;
-            background: transparent !important;
+            background-color: rgba(0, 0, 0, 0) !important;
         }
         
         #canvas-container {
             width: 100%;
             height: 100%;
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
-            background: transparent !important;
+            background-color: rgba(0, 0, 0, 0) !important;
         }
     </style>
 </head>
@@ -52,6 +52,8 @@
             
             // Create scene with transparent background
             scene = new THREE.Scene();
+            // Set the clear color to transparent
+            scene.background = null;
             
             // Create camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -69,7 +71,11 @@
             
             // Important transparency settings
             document.getElementById('canvas-container').appendChild(renderer.domElement);
-            renderer.domElement.style.background = "transparent";
+            
+            // Make sure the canvas is fully transparent
+            const canvasElement = renderer.domElement;
+            canvasElement.style.backgroundColor = "transparent";
+            document.body.style.background = "transparent";
             
             // Setup lights optimized for yellow/orange bee
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -85,11 +91,53 @@
             warmLight.position.set(3, 0, 3);
             scene.add(warmLight);
             
-            // Controls
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.enableZoom = false;
+            // Set up modified controls that allow rotating the bee in place
+            // without orbiting around a center point
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            
+            // Mouse down event - start dragging
+            renderer.domElement.addEventListener('mousedown', function(event) {
+                isDragging = true;
+                previousMousePosition = {
+                    x: event.clientX,
+                    y: event.clientY
+                };
+            });
+            
+            // Mouse move event - rotate the bee if dragging
+            renderer.domElement.addEventListener('mousemove', function(event) {
+                if (!isDragging || !bee) return;
+                
+                // Calculate how much the mouse has moved
+                const deltaMove = {
+                    x: event.clientX - previousMousePosition.x,
+                    y: event.clientY - previousMousePosition.y
+                };
+                
+                // Use the mouse movement to rotate the bee directly in place
+                // Horizontal movement rotates around Y axis
+                bee.rotation.y += deltaMove.x * 0.01;
+                
+                // Vertical movement rotates around X axis (with limits to prevent flipping)
+                bee.rotation.x += deltaMove.y * 0.01;
+                bee.rotation.x = Math.max(-Math.PI/4, Math.min(Math.PI/4, bee.rotation.x));
+                
+                // Update previous position
+                previousMousePosition = {
+                    x: event.clientX,
+                    y: event.clientY
+                };
+            });
+            
+            // Mouse up and mouse leave events - stop dragging
+            renderer.domElement.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            renderer.domElement.addEventListener('mouseleave', function() {
+                isDragging = false;
+            });
             
             // Load the bee model
             const loader = new THREE.GLTFLoader();
@@ -103,15 +151,22 @@
                     const center = box.getCenter(new THREE.Vector3());
                     const size = box.getSize(new THREE.Vector3());
                     
-                    const maxDim = Math.max(size.x, size.y, size.z);
-                    // Reduce scale to make bee smaller
-                    const scale = 4.5 / maxDim; // Reduced from 5.5 to 4.5
+                    // Store maxDim as a global variable to use in scroll animation
+                    window.maxDim = Math.max(size.x, size.y, size.z);
+                    // Set initial scale
+                    const scale = 4.0 / maxDim; 
                     bee.scale.set(scale, scale, scale);
                     
-                    // Position bee to the right and a bit lower
-                    bee.position.x = -center.x * scale + 1.0; // Keep the right shift
-                    bee.position.y = -center.y * scale - 0.8; // Move lower
-                    bee.position.z = -center.z * scale;
+                    // Position bee more to the left and much lower
+                    bee.position.x = 0.5; // Move more to the left (was 1.5)
+                    bee.position.y = -3.0; // Keep the bee much lower (negative Y is down)
+                    bee.position.z = 0;
+                    
+                    // Rotate the bee 300 degrees to the left (rotate counterclockwise around Y axis)
+                    bee.rotation.y = (5 * Math.PI) / 3; // 300 degrees in radians (to the left)
+                    
+                    // Log to confirm bee is loaded and rotated
+                    console.log('Bee model loaded and positioned:', bee.position, 'with rotation:', bee.rotation);
                     
                     // Process materials
                     bee.traverse(function(node) {
@@ -209,6 +264,29 @@
         
         // Start everything when the document is loaded
         window.addEventListener('DOMContentLoaded', init);
+        
+        // Restore the simple hover animation for the bee
+        function animateBeeHover() {
+            // Store the initial rotation value to preserve it
+            const initialRotationY = (5 * Math.PI) / 3; // 300 degrees to the left
+            
+            function hover() {
+                if (!bee) return;
+                
+                const time = Date.now() * 0.001;
+                // Add gentle hovering motion around the much lower position
+                bee.position.y = -3.0 + Math.sin(time * 1.5) * 0.2;
+                // Maintain the initial -60 degree rotation while adding subtle movement
+                bee.rotation.y = initialRotationY + Math.sin(time * 0.5) * 0.1;
+                
+                requestAnimationFrame(hover);
+            }
+            
+            hover();
+        }
+        
+        // Call hover animation immediately
+        animateBeeHover();
     </script>
 </body>
 </html>

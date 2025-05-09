@@ -4,7 +4,7 @@ import '../styles/flipCard.css';
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-16 bg-emerald-950">
+    <section className="py-16 relative">
       <div className="container mx-auto px-4">
         {/* Section Title */}
         <div className="text-center mb-12">

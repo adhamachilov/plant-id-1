@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Leaf, Search, Menu, X, Camera, Upload } from 'lucide-react';
+import { Leaf, Search, Menu, X, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
@@ -25,18 +25,13 @@ const Header: React.FC = () => {
               <Link to="/identify" className="text-white hover:text-emerald-400 transition-colors duration-300">Identify</Link>
               <Link to="/plants" className="text-white hover:text-emerald-400 transition-colors duration-300">Plants</Link>
               <Link to="/about" className="text-white hover:text-emerald-400 transition-colors duration-300">About</Link>
+              <Link to="/contact" className="text-white hover:text-emerald-400 transition-colors duration-300">Contact</Link>
             </nav>
           </div>
         </div>
 
-        {/* Desktop Search and Actions */}
+        {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-4">
-          <button 
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="p-2 rounded-full text-white hover:bg-emerald-800/50 transition-colors duration-300"
-          >
-            <Search className="h-5 w-5" />
-          </button>
           <Link 
             to="/identify" 
             className="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-emerald-950 font-medium px-4 py-2 rounded-full transition-colors duration-300"
@@ -86,6 +81,13 @@ const Header: React.FC = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               About
+            </Link>
+            <Link 
+              to="/contact" 
+              className="text-white py-2 hover:text-emerald-400 transition-colors duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact
             </Link>
             <div className="pt-2 border-t border-emerald-800/50">
               <Link

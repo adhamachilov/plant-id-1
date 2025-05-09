@@ -24,7 +24,7 @@ const PlantGrid: React.FC<PlantGridProps> = ({
           </div>
         )}
 
-        <div className="flex justify-center flex-row gap-6 px-6 mx-auto mt-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-24 px-6 mx-auto mt-24">
           {plants.map((plant) => (
             <PlantCard 
               key={plant.id} 

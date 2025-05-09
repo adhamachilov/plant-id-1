@@ -2,8 +2,8 @@ import { PlantInfo } from '../components/PlantCard';
 import { analyzeImageWithGemini } from './geminiService';
 import { v4 as uuidv4 } from 'uuid';
 
-// Mock plant database for fallback
-const plantDatabase: PlantInfo[] = [
+// Plant database - exported so it can be accessed and modified
+export const plantDatabase: PlantInfo[] = [
   {
     id: 'monstera-deliciosa',
     name: 'Red Gerbera Daisy',
@@ -216,4 +216,26 @@ export const searchPlants = (query: string): PlantInfo[] => {
     plant.name.toLowerCase().includes(lowercaseQuery) || 
     plant.scientificName.toLowerCase().includes(lowercaseQuery)
   );
+};
+
+// Add an identified plant to the database
+export const savePlantToDatabase = (plant: PlantInfo): boolean => {
+  try {
+    // Check if plant with same ID already exists
+    const existingPlantIndex = plantDatabase.findIndex(p => p.id === plant.id);
+    
+    if (existingPlantIndex >= 0) {
+      // Update existing plant
+      plantDatabase[existingPlantIndex] = plant;
+    } else {
+      // Add new plant
+      plantDatabase.push(plant);
+    }
+    
+    console.log('Plant saved to database:', plant.name);
+    return true;
+  } catch (error) {
+    console.error('Error saving plant to database:', error);
+    return false;
+  }
 };

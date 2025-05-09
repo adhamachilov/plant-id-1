@@ -12,6 +12,7 @@ const FlippingCard: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFlipping, setIsFlipping] = useState(false);
   const [contentVisible, setContentVisible] = useState(true);
+  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
   
   const cards: CardContent[] = [
     {
@@ -37,6 +38,7 @@ const FlippingCard: React.FC = () => {
   const nextCard = () => {
     if (activeIndex < cards.length - 1 && !isFlipping) {
       setIsFlipping(true);
+      setDirection('forward');
       
       // Wait until halfway through the flip to hide content and change card
       setTimeout(() => {
@@ -55,6 +57,7 @@ const FlippingCard: React.FC = () => {
   const prevCard = () => {
     if (activeIndex > 0 && !isFlipping) {
       setIsFlipping(true);
+      setDirection('backward');
       
       // Wait until halfway through the flip to hide content and change card
       setTimeout(() => {
@@ -74,7 +77,7 @@ const FlippingCard: React.FC = () => {
     <div className="w-full flex flex-col items-center justify-center py-6">
       <div className="w-full max-w-sm mx-auto">
         <div className="flip-card mb-6">
-          <div className={`flip-card-inner ${isFlipping ? 'flipping' : ''}`}>
+          <div className={`flip-card-inner ${isFlipping ? (direction === 'forward' ? 'flipping' : 'flipping-back') : ''}`}>
             <div className={`flip-card-front p-6 bg-gradient-to-r ${cards[activeIndex].color}`}>
               <div className={`flex flex-col items-center text-center ${contentVisible ? 'card-content-fade-in' : 'opacity-0'}`}>
                 <div className="mb-4 bg-white/20 p-4 rounded-full card-icon">

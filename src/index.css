@@ -1,3 +1,110 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Simple Glow Border Animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.5);
+  }
+}
+
+@keyframes borderRotate {
+  from {
+    background-position: 0% center;
+  }
+  to {
+    background-position: 200% center;
+  }
+}
+
+.border-line-animation {
+  position: relative;
+}
+
+.border-line-animation::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    90deg, 
+    rgba(74, 222, 128, 0), 
+    rgba(74, 222, 128, 1),
+    rgba(74, 222, 128, 0)
+  );
+  background-size: 200% auto;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.border-line-animation:hover::before {
+  opacity: 1;
+  animation: borderRotate 3s linear infinite;
+}
+
+/* Featured card style */
+.featured-line-animation::before {
+  background: linear-gradient(
+    90deg, 
+    rgba(101, 238, 183, 0), 
+    rgba(101, 238, 183, 1),
+    rgba(101, 238, 183, 0)
+  );
+  background-size: 200% auto;
+}
+
+/* Stacked Card Animation Styles */
+
+.stacked-card {
+  position: relative;
+  transition: all 0.4s ease-out;
+  box-shadow: -1rem 0 3rem rgba(0,0,0,.4);
+}
+
+.stacked-card:hover {
+  transform: translateY(-1rem) rotate(2deg) !important;
+  z-index: 40 !important;
+  box-shadow: 0 1rem 3rem rgba(0,0,0,.5);
+}
+
+/* When a card is hovered, increase margin for adjacent cards */
+.stacked-card:hover + .stacked-card {
+  margin-left: 10px !important;
+}
+
+.stacked-card-header h3 {
+  transition: all 0.3s ease;
+}
+
+.stacked-card:hover .stacked-card-header h3 {
+  background: linear-gradient(90deg,#22c55e,#10b981);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: scale(1.05);
+}
+
+.stacked-card .icon-wrapper {
+  transition: all 0.3s ease;
+}
+
+.stacked-card:hover .icon-wrapper {
+  transform: scale(1.1) rotate(-5deg);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.7), rgba(6, 95, 70, 0.9));
+}
+

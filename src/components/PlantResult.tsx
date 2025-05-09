@@ -1,6 +1,7 @@
-import React from 'react';
-import { ArrowLeft, Droplets, Sun, ThermometerSnowflake, BookOpen, Heart, Share2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Droplets, Sun, ThermometerSnowflake, BookOpen, Heart, Share2, CheckCircle, AlertOctagon } from 'lucide-react';
 import { PlantInfo } from './PlantCard';
+import { savePlantToDatabase } from '../services/plantService';
 
 interface PlantResultProps {
   plant: PlantInfo;
@@ -9,6 +10,41 @@ interface PlantResultProps {
 }
 
 const PlantResult: React.FC<PlantResultProps> = ({ plant, image, onReset }) => {
+  // State to track the save operation status
+  const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
+  
+  // Function to save the plant to the database
+  const handleSaveToDatabase = () => {
+    try {
+      // If the image is a data URL, create a proper URL for it
+      if (image && plant) {
+        // Create a copy of the plant with the image URL
+        const plantToSave = {
+          ...plant,
+          // If the image is already saved, keep that URL, otherwise use the current image
+          image: image
+        };
+        
+        // Save the plant to the database
+        const success = savePlantToDatabase(plantToSave);
+        
+        if (success) {
+          setSaveStatus('success');
+          // Clear the success message after 3 seconds
+          setTimeout(() => {
+            setSaveStatus(null);
+          }, 3000);
+        } else {
+          setSaveStatus('error');
+        }
+      } else {
+        setSaveStatus('error');
+      }
+    } catch (error) {
+      console.error('Error saving plant:', error);
+      setSaveStatus('error');
+    }
+  };
   // Helper function to render the appropriate level indicators
   const renderLevelIndicator = (level: 'low' | 'medium' | 'high', label: string) => {
     const levels = {
@@ -83,10 +119,30 @@ const PlantResult: React.FC<PlantResultProps> = ({ plant, image, onReset }) => {
               </ul>
             </div>
             
+            {/* Status message for save operation */}
+            {saveStatus && (
+              <div className={`mb-4 p-3 rounded-xl flex items-center ${saveStatus === 'success' ? 'bg-emerald-800/50 text-emerald-300' : 'bg-red-900/30 text-red-300'}`}>
+                {saveStatus === 'success' ? (
+                  <>
+                    <CheckCircle className="h-5 w-5 mr-2 text-emerald-400" />
+                    <span>Plant saved to your database successfully!</span>
+                  </>
+                ) : (
+                  <>
+                    <AlertOctagon className="h-5 w-5 mr-2 text-red-400" />
+                    <span>Failed to save plant. Please try again.</span>
+                  </>
+                )}
+              </div>
+            )}
+
             <div className="flex space-x-4">
-              <button className="flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-emerald-950 flex-1 py-3 rounded-xl font-medium transition-all duration-300">
+              <button 
+                onClick={handleSaveToDatabase}
+                className="flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-emerald-950 flex-1 py-3 rounded-xl font-medium transition-all duration-300"
+              >
                 <Heart className="h-5 w-5" />
-                <span>Save</span>
+                <span>Save to Database</span>
               </button>
               <button className="flex items-center justify-center space-x-2 bg-transparent border border-emerald-500 hover:bg-emerald-800 text-emerald-400 flex-1 py-3 rounded-xl font-medium transition-all duration-300">
                 <Share2 className="h-5 w-5" />

@@ -29,17 +29,32 @@ interface PlantCardProps {
 
 const PlantCard: React.FC<PlantCardProps> = ({ plant, featured = false }) => {
 
+  // Check if the image is likely from user analysis (with background) or a PNG without background
+  const isUserAnalyzedImage = plant.image.startsWith('data:image') || !plant.image.includes('/assets/');
+  
   if (featured) {
     return (
-      <div className="relative bg-emerald-900/30 backdrop-blur-xl rounded-xl overflow-hidden shadow-lg border border-emerald-500/30 h-full flex flex-col justify-between hover:shadow-emerald-700/20 hover:shadow-xl transition-all duration-300">
+      <div className="relative bg-emerald-900/30 backdrop-blur-xl rounded-xl overflow-hidden shadow-lg border border-emerald-500/30 h-full flex flex-col justify-between hover:shadow-emerald-700/20 hover:shadow-xl transition-all duration-300 border-line-animation featured-line-animation">
+        <span></span>
+        <span></span>
         <div className="flex flex-col md:flex-row">
-          <div className="md:w-1/2 relative h-64 md:h-auto overflow-visible">
-            <img
-              src={plant.image}
-              alt={plant.name}
-              className="w-full h-full object-contain"
-              style={{ filter: 'drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.2))', transform: 'translateY(-20%)' }}
-            />
+          <div className="md:w-1/2 relative h-64 md:h-auto overflow-visible flex items-center justify-center" style={{ zIndex: 5 }}>
+            {isUserAnalyzedImage ? (
+              <div className="rounded-full w-48 h-48 bg-emerald-900/70 backdrop-blur-sm p-1 border border-emerald-600/30 overflow-hidden">
+                <img
+                  src={plant.image}
+                  alt={plant.name}
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </div>
+            ) : (
+              <img
+                src={plant.image}
+                alt={plant.name}
+                className="w-full h-full object-contain"
+                style={{ filter: 'drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.2))', transform: 'translateY(-20%)', position: 'relative', zIndex: 5 }}
+              />
+            )}
           </div>
           <div className="md:w-1/2 p-6 md:p-8">
             <h3 className="text-2xl font-bold text-white mb-1">{plant.name}</h3>
@@ -65,19 +80,21 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, featured = false }) => {
   }
 
   return (
-    <div className="bg-emerald-900/25 backdrop-blur-xl rounded-2xl shadow-lg transform transition-all duration-300 hover:shadow-emerald-600/20 hover:-translate-y-1 pt-28 px-4 pb-5 border border-emerald-500/30 relative w-72 min-h-[320px] flex flex-col">
-      <div className="absolute top-0 left-0 right-0 flex justify-center" style={{ transform: 'translateY(-50%)' }}>
-        <div className="flex items-center justify-center">
+    <div className="bg-emerald-900/25 backdrop-blur-xl rounded-2xl shadow-lg transform transition-all duration-300 hover:shadow-emerald-600/20 hover:-translate-y-1 pt-24 px-4 pb-5 border border-emerald-500/30 relative w-72 min-h-[320px] flex flex-col border-line-animation">
+      <span></span>
+      <span></span>
+      <div className="absolute top-0 left-0 right-0 flex justify-center" style={{ transform: 'translateY(-50%)', zIndex: 5 }}>
+        <div className={`flex items-center justify-center ${isUserAnalyzedImage ? 'rounded-full h-36 w-36 bg-emerald-900/70 backdrop-blur-sm p-1 border border-emerald-600/30 overflow-hidden' : ''}`}>
           <img
             src={plant.image}
             alt={plant.name}
-            className="h-56 object-contain"
-            style={{ filter: 'drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3))' }}
+            className={isUserAnalyzedImage ? "h-full w-full object-cover rounded-full" : "h-56 object-contain"}
+            style={isUserAnalyzedImage ? { } : { filter: 'drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3))' }}
           />
         </div>
       </div>
       
-      <div className="text-center mt-6">
+      <div className="text-center mt-2">
         <h3 className="text-xl font-medium text-white mb-1.5">{plant.name}</h3>
         <p className="text-emerald-300/80 text-base italic mb-3">{plant.scientificName}</p>
         <p className="text-gray-400/90 text-base mb-5 line-clamp-2 mx-auto max-w-[90%]">

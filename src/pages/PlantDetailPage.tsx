@@ -4,6 +4,7 @@ import { ArrowLeft, Droplets, Sun, ThermometerSnowflake, BookOpen, Heart, Share2
 import { getPlantById, getFeaturedPlants } from '../services/plantService';
 import { PlantInfo } from '../components/PlantCard';
 import PlantGrid from '../components/PlantGrid';
+import AnimatedElement from '../components/AnimatedElement';
 
 const PlantDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -156,108 +157,126 @@ const PlantDetailPage: React.FC = () => {
     <div className="bg-emerald-950 min-h-screen pt-24 pb-16">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
-        <Link 
-          to="/plants" 
-          className="inline-flex items-center text-emerald-400 hover:text-emerald-300 mb-8 transition-colors duration-300"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Plants
-        </Link>
+          <AnimatedElement>
+            <Link 
+              to="/plants" 
+              className="inline-flex items-center text-emerald-400 hover:text-emerald-300 mb-8 transition-colors duration-300"
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Back to Plants
+            </Link>
+          </AnimatedElement>
 
-        <div className="bg-emerald-900/70 backdrop-blur-md rounded-3xl overflow-hidden shadow-xl mb-16 border border-emerald-500/30">
-          <div className="p-6 md:p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <div className="mb-6 rounded-2xl overflow-hidden">
-                  <img 
-                    src={plant.image} 
-                    alt={plant.name} 
-                    className="w-full h-auto"
-                  />
-                </div>
-                
-                <div className="bg-emerald-950/50 rounded-2xl p-5 mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                    <BookOpen className="h-5 w-5 mr-2 text-emerald-400" />
-                    Interesting Facts
-                  </h3>
-                  <ul className="space-y-3">
-                    {facts.map((fact, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span className="text-emerald-200 text-sm">{fact}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="flex space-x-4">
-                  <button className="flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-emerald-950 flex-1 py-3 rounded-xl font-medium transition-all duration-300">
-                    <Heart className="h-5 w-5" />
-                    <span>Save</span>
-                  </button>
-                  <button className="flex items-center justify-center space-x-2 bg-transparent border border-emerald-500 hover:bg-emerald-800 text-emerald-400 flex-1 py-3 rounded-xl font-medium transition-all duration-300">
-                    <Share2 className="h-5 w-5" />
-                    <span>Share</span>
-                  </button>
-                </div>
-              </div>
-              
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">{plant.name}</h1>
-                <p className="text-emerald-400 italic mb-4">{plant.scientificName}</p>
-                
-                <p className="text-emerald-200 mb-6">{plant.description}</p>
-                
-                <div className="space-y-4 mb-8">
-                  {renderLevelIndicator(plant.wateringNeeds, 'Water Needs')}
-                  {renderLevelIndicator(plant.sunlight, 'Sunlight')}
-                  <div className="flex flex-col">
-                    <span className="text-sm text-emerald-300 mb-1">Temperature</span>
-                    <div className="flex items-center">
-                      <ThermometerSnowflake className="h-5 w-5 text-emerald-400 mr-2" />
-                      <span className="text-emerald-300">{plant.temperature}</span>
-                    </div>
+          <AnimatedElement delay={0.1}>
+            <div className="bg-emerald-900/70 backdrop-blur-md rounded-3xl overflow-hidden shadow-xl mb-16 border border-emerald-500/30">
+              <div className="p-6 md:p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <AnimatedElement delay={0.2}>
+                      <div className="mb-6 rounded-2xl overflow-hidden">
+                        <img 
+                          src={plant.image} 
+                          alt={plant.name} 
+                          className="w-full h-auto"
+                        />
+                      </div>
+                    </AnimatedElement>
+                    
+                    <AnimatedElement delay={0.3}>
+                      <div className="bg-emerald-950/50 rounded-2xl p-5 mb-6">
+                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                          <BookOpen className="h-5 w-5 mr-2 text-emerald-400" />
+                          Interesting Facts
+                        </h3>
+                        <ul className="space-y-3">
+                          {facts.map((fact, index) => (
+                            <li key={index} className="flex items-start">
+                              <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 mt-1.5 mr-2 flex-shrink-0"></span>
+                              <span className="text-emerald-200 text-sm">{fact}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </AnimatedElement>
+                    
+                    <AnimatedElement delay={0.4}>
+                      <div className="flex space-x-4">
+                        <button className="flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-emerald-950 flex-1 py-3 rounded-xl font-medium transition-all duration-300">
+                          <Heart className="h-5 w-5" />
+                          <span>Save</span>
+                        </button>
+                        <button className="flex items-center justify-center space-x-2 bg-transparent border border-emerald-500 hover:bg-emerald-800 text-emerald-400 flex-1 py-3 rounded-xl font-medium transition-all duration-300">
+                          <Share2 className="h-5 w-5" />
+                          <span>Share</span>
+                        </button>
+                      </div>
+                    </AnimatedElement>
                   </div>
-                </div>
-                
-                <div className="bg-emerald-950/50 rounded-2xl p-5">
-                  <h3 className="text-lg font-semibold text-white mb-4">Care Instructions</h3>
                   
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-emerald-400 font-medium mb-1">Watering</h4>
-                      <p className="text-emerald-200 text-sm">{careInstructions.watering}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-emerald-400 font-medium mb-1">Light</h4>
-                      <p className="text-emerald-200 text-sm">{careInstructions.light}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-emerald-400 font-medium mb-1">Soil</h4>
-                      <p className="text-emerald-200 text-sm">{careInstructions.soil}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-emerald-400 font-medium mb-1">Humidity</h4>
-                      <p className="text-emerald-200 text-sm">{careInstructions.humidity}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-emerald-400 font-medium mb-1">Fertilizing</h4>
-                      <p className="text-emerald-200 text-sm">{careInstructions.fertilizing}</p>
-                    </div>
+                  <div>
+                    <AnimatedElement delay={0.2}>
+                      <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">{plant.name}</h1>
+                      <p className="text-emerald-400 italic mb-4">{plant.scientificName}</p>
+                      
+                      <p className="text-emerald-200 mb-6">{plant.description}</p>
+                    </AnimatedElement>
+                    
+                    <AnimatedElement delay={0.3}>
+                      <div className="space-y-4 mb-8">
+                        {renderLevelIndicator(plant.wateringNeeds, 'Water Needs')}
+                        {renderLevelIndicator(plant.sunlight, 'Sunlight')}
+                        <div className="flex flex-col">
+                          <span className="text-sm text-emerald-300 mb-1">Temperature</span>
+                          <div className="flex items-center">
+                            <ThermometerSnowflake className="h-5 w-5 text-emerald-400 mr-2" />
+                            <span className="text-emerald-300">{plant.temperature}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </AnimatedElement>
+                    
+                    <AnimatedElement delay={0.4}>
+                      <div className="bg-emerald-950/50 rounded-2xl p-5">
+                        <h3 className="text-lg font-semibold text-white mb-4">Care Instructions</h3>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="text-emerald-400 font-medium mb-1">Watering</h4>
+                            <p className="text-emerald-200 text-sm">{careInstructions.watering}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-emerald-400 font-medium mb-1">Light</h4>
+                            <p className="text-emerald-200 text-sm">{careInstructions.light}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-emerald-400 font-medium mb-1">Soil</h4>
+                            <p className="text-emerald-200 text-sm">{careInstructions.soil}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-emerald-400 font-medium mb-1">Humidity</h4>
+                            <p className="text-emerald-200 text-sm">{careInstructions.humidity}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-emerald-400 font-medium mb-1">Fertilizing</h4>
+                            <p className="text-emerald-200 text-sm">{careInstructions.fertilizing}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </AnimatedElement>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </AnimatedElement>
         </div>
 
-        <PlantGrid 
-          plants={similarPlants.filter(p => p.id !== plant.id)} 
-          title="Similar Plants You Might Like"
-          description="Browse other plants with similar care requirements"
-        />
+        <AnimatedElement delay={0.5}>
+          <PlantGrid 
+            plants={similarPlants.filter(p => p.id !== plant.id)} 
+            title="Similar Plants You Might Like"
+            description="Browse other plants with similar care requirements"
+          />
+        </AnimatedElement>
       </div>
     </div>
   );

@@ -4,25 +4,34 @@ import HowItWorks from '../components/HowItWorks';
 import FeatureHighlights from '../components/FeatureHighlights';
 import PlantGrid from '../components/PlantGrid';
 import { getFeaturedPlants } from '../services/plantService';
+import AnimatedElement from '../components/AnimatedElement';
 
 const HomePage: React.FC = () => {
   const popularPlants = getFeaturedPlants(4);
 
   return (
-    <div className="bg-emerald-950 min-h-screen">
-      <Hero />
-      
-      <div className="py-16">
-        <PlantGrid 
-          plants={popularPlants} 
-          title="Popular Plants"
-          description="Our community's favorite plants to grow at home"
-        />
+    <div className="relative min-h-screen">
+      <div className="relative z-10">
+        <AnimatedElement>
+          <Hero />
+        </AnimatedElement>
+        
+        <AnimatedElement delay={0.2} className="pt-0 pb-16 -mt-8">
+          <PlantGrid 
+            plants={popularPlants} 
+            title="Popular Plants"
+            description="Our community's favorite plants to grow at home"
+          />
+        </AnimatedElement>
+        
+        <AnimatedElement delay={0.4}>
+          <HowItWorks />
+        </AnimatedElement>
+        
+        <AnimatedElement delay={0.6}>
+          <FeatureHighlights />
+        </AnimatedElement>
       </div>
-      
-      <HowItWorks />
-      
-      <FeatureHighlights />
     </div>
   );
 };
